@@ -1,4 +1,4 @@
-import { getKonnect } from "@/lib/konnect";
+import { getKonnect, getMode } from "@/lib/konnect";
 import { findOrderByPayment, note } from "@/lib/orders";
 
 export const runtime = "nodejs";
@@ -8,6 +8,9 @@ export const runtime = "nodejs";
  * from Konnect before anything happens, and `onPaid` runs once per payment.
  */
 export async function GET(request: Request) {
+  if (getMode() === "unconfigured") {
+    return Response.json({ error: "demo_not_configured" }, { status: 503 });
+  }
   const { client } = await getKonnect();
   const handler = client.webhooks.handler({
     onPaid(payment) {
