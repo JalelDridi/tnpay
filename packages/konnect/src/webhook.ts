@@ -3,8 +3,8 @@ import {
   createMemoryStore,
   type IdempotencyStore,
 } from "@tnpay/core";
-import type { Konnect } from "./client.js";
-import type { Payment } from "./types.js";
+import type { Konnect } from "./client";
+import type { Payment } from "./types";
 
 export interface WebhookContext {
   paymentRef: string;

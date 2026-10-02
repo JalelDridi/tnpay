@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { mapStatus } from "./status.js";
-import type { KonnectPayment } from "./types.js";
+import { mapStatus } from "./status";
+import type { KonnectPayment } from "./types";
 
 const now = new Date("2026-10-02T12:00:00Z");
 const base: KonnectPayment = {

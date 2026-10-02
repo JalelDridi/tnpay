@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { ApiError, NetworkError, TimeoutError } from "./errors.js";
-import { createHttp } from "./http.js";
+import { ApiError, NetworkError, TimeoutError } from "./errors";
+import { createHttp } from "./http";
 
 type Reply = { status: number; body?: unknown } | Error | "hang";
 

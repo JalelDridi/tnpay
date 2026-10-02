@@ -29,20 +29,12 @@
     "dist",
     "README.md"
   ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./fake": {
-      "types": "./dist/fake/index.d.ts",
-      "import": "./dist/fake/index.js",
-      "require": "./dist/fake/index.cjs"
-    }
+    ".": "./src/index.ts",
+    "./fake": "./src/fake/index.ts"
   },
   "bin": {
     "tnpay-konnect": "./dist/fake/cli.js"
@@ -53,5 +45,25 @@
   },
   "dependencies": {
     "@tnpay/core": "workspace:*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./fake": {
+        "types": "./dist/fake/index.d.ts",
+        "import": "./dist/fake/index.js",
+        "require": "./dist/fake/index.cjs"
+      }
+    },
+    "bin": {
+      "tnpay-konnect": "./dist/fake/cli.js"
+    }
   }
 }

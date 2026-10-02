@@ -1,5 +1,5 @@
 import type { PaymentStatus } from "@tnpay/core";
-import type { KonnectPayment } from "./types.js";
+import type { KonnectPayment } from "./types";
 
 /**
  * Transaction statuses that mean the payer's attempt did not go through.

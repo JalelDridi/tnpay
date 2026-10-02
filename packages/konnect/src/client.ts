@@ -1,12 +1,12 @@
 import { createHttp, type Http } from "@tnpay/core";
-import { mapStatus } from "./status.js";
+import { mapStatus } from "./status";
 import type {
   CreatePaymentInput,
   CreatePaymentResult,
   KonnectPayment,
   Payment,
-} from "./types.js";
-import { createWebhookHandler, type WebhookOptions } from "./webhook.js";
+} from "./types";
+import { createWebhookHandler, type WebhookOptions } from "./webhook";
 
 export const BASE_URLS = {
   sandbox: "https://api.sandbox.konnect.network/api/v2",

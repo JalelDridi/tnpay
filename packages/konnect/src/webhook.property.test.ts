@@ -1,7 +1,7 @@
 import fc from "fast-check";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { Konnect } from "./client.js";
-import { createFakeKonnect, type FakeKonnect } from "./fake/index.js";
+import { Konnect } from "./client";
+import { createFakeKonnect, type FakeKonnect } from "./fake/index";
 
 type Delivery = "pending" | "pay" | "repeat";
 

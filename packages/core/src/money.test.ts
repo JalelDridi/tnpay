@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatMoney, tnd, toMinor } from "./money.js";
+import { formatMoney, tnd, toMinor } from "./money";
 
 describe("tnd", () => {
   it("converts dinars to millimes", () => {

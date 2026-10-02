@@ -6,4 +6,5 @@ pnpm format:check >/dev/null
 pnpm typecheck >/dev/null
 pnpm test 2>&1 | grep -E "Tests "
 pnpm build >/dev/null
+pnpm --filter demo typecheck >/dev/null
 echo "all checks passed"

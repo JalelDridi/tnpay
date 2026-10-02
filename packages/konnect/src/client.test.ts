@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { Konnect } from "./client.js";
+import { Konnect } from "./client";
 
 function stubFetch(status: number, body: unknown) {
   const calls: { url: string; init: RequestInit }[] = [];

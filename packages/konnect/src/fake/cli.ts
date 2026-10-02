@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createFakeKonnect } from "./index.js";
+import { createFakeKonnect } from "./index";
 
 const [command = "fake", ...rest] = process.argv.slice(2);
 

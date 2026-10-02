@@ -1,9 +1,9 @@
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Konnect } from "./client.js";
-import { createFakeKonnect, type FakeKonnect } from "./fake/index.js";
-import type { Payment } from "./types.js";
+import { Konnect } from "./client";
+import { createFakeKonnect, type FakeKonnect } from "./fake/index";
+import type { Payment } from "./types";
 
 /**
  * Runs the handler behind a real HTTP server, the way a merchant would, so

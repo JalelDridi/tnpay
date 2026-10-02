@@ -2,8 +2,8 @@ import { ApiError } from "@tnpay/core";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { Konnect } from "./client.js";
-import { createFakeKonnect, type FakeKonnect } from "./fake/index.js";
+import { Konnect } from "./client";
+import { createFakeKonnect, type FakeKonnect } from "./fake/index";
 
 /** A merchant endpoint that records the webhook calls it receives. */
 async function receiver() {

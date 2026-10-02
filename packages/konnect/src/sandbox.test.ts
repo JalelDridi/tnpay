@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Konnect } from "./client.js";
+import { Konnect } from "./client";
 
 const apiKey = process.env.KONNECT_API_KEY;
 const walletId = process.env.KONNECT_WALLET_ID;

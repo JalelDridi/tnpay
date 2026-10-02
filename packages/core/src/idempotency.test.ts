@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMemoryStore } from "./idempotency.js";
+import { createMemoryStore } from "./idempotency";
 
 describe("createMemoryStore", () => {
   it("lets a key be claimed once", async () => {

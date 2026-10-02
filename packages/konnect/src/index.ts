@@ -1,22 +1,17 @@
-export {
-  BASE_URLS,
-  Konnect,
-  toPayment,
-  type KonnectOptions,
-} from "./client.js";
-export { mapStatus } from "./status.js";
+export { BASE_URLS, Konnect, toPayment, type KonnectOptions } from "./client";
+export { mapStatus } from "./status";
 export type {
   CreatePaymentInput,
   CreatePaymentResult,
   KonnectPayment,
   KonnectTransaction,
   Payment,
-} from "./types.js";
+} from "./types";
 export {
   createWebhookHandler,
   type WebhookContext,
   type WebhookOptions,
-} from "./webhook.js";
+} from "./webhook";
 export {
   ApiError,
   NetworkError,

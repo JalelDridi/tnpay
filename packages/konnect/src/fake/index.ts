@@ -5,7 +5,7 @@ import {
 } from "node:http";
 import type { AddressInfo } from "node:net";
 import { randomBytes } from "node:crypto";
-import type { KonnectPayment, KonnectTransaction } from "../types.js";
+import type { KonnectPayment, KonnectTransaction } from "../types";
 
 export interface FakeKonnectOptions {
   /** The key the fake accepts. Default "fake-api-key". */

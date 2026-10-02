@@ -1,4 +1,4 @@
-import { ApiError, NetworkError, TimeoutError } from "./errors.js";
+import { ApiError, NetworkError, TimeoutError } from "./errors";
 
 export type HttpOptions = {
   baseUrl: string;

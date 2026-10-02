@@ -5,7 +5,8 @@ TypeScript SDK for Tunisian payment gateways. Konnect first. Spec: `docs/superpo
 ## Commands
 
 - `pnpm lint` · `pnpm format:check` · `pnpm typecheck` · `pnpm test` · `pnpm build` — the CI checks, in order. Run all before committing.
-- `pnpm test:watch` while developing.
+- `bash check.sh` runs all of them and stops at the first failure.
+- Demo: `pnpm --filter demo dev` (uses the fake Konnect unless `KONNECT_API_KEY` and `KONNECT_WALLET_ID` are set), `pnpm --filter demo build`, `pnpm --filter demo test:e2e` (needs the build).
 
 ## Layout
 
