@@ -13,11 +13,12 @@ const keyIndex = rest.indexOf("--api-key");
 const port = portIndex === -1 ? 7320 : Number(rest[portIndex + 1]);
 const apiKey = keyIndex === -1 ? "fake-api-key" : rest[keyIndex + 1];
 
-const fake = await createFakeKonnect(
-  apiKey === undefined ? { port } : { port, apiKey },
-);
+async function main() {
+  const fake = await createFakeKonnect(
+    apiKey === undefined ? { port } : { port, apiKey },
+  );
 
-console.log(`Fake Konnect listening.
+  console.log(`Fake Konnect listening.
   baseUrl:  ${fake.baseUrl}
   api key:  ${fake.apiKey}
   wallet:   any non-empty string
@@ -27,6 +28,12 @@ Point the client at it:
 
 Open a payment's payUrl in a browser to pay or fail it.`);
 
-const stop = () => fake.close().then(() => process.exit(0));
-process.on("SIGINT", stop);
-process.on("SIGTERM", stop);
+  const stop = () => fake.close().then(() => process.exit(0));
+  process.on("SIGINT", stop);
+  process.on("SIGTERM", stop);
+}
+
+main().catch((error: unknown) => {
+  console.error(error);
+  process.exit(1);
+});
