@@ -1,5 +1,5 @@
 import { formatMoney, tnd } from "@tnpay/konnect";
-import { getKonnect } from "@/lib/konnect";
+import { getMode } from "@/lib/konnect";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ const CARDS = [
 ];
 
 export default async function Home() {
-  const { mode } = await getKonnect();
+  const mode = getMode();
   return (
     <div className="flex flex-col gap-8">
       <section>
@@ -53,14 +53,22 @@ export default async function Home() {
           </div>
           <p className="text-2xl font-semibold">{formatMoney(tnd(5), "TND")}</p>
         </div>
-        <form method="post" action="/api/checkout" className="mt-6">
-          <button
-            type="submit"
-            className="rounded-full bg-stone-900 px-6 py-3 text-base font-medium text-white hover:bg-stone-700"
-          >
-            Pay with Konnect
-          </button>
-        </form>
+        {mode === "unconfigured" ? (
+          <p className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            This deployment has no Konnect sandbox credentials yet, so the
+            checkout is switched off. Run it locally with{" "}
+            <code>pnpm --filter demo dev</code> and it uses the fake Konnect.
+          </p>
+        ) : (
+          <form method="post" action="/api/checkout" className="mt-6">
+            <button
+              type="submit"
+              className="rounded-full bg-stone-900 px-6 py-3 text-base font-medium text-white hover:bg-stone-700"
+            >
+              Pay with Konnect
+            </button>
+          </form>
+        )}
       </section>
 
       <section className="rounded-2xl border border-stone-200 bg-white p-6">
@@ -93,6 +101,15 @@ export default async function Home() {
                 ))}
               </tbody>
             </table>
+          </>
+        ) : mode === "unconfigured" ? (
+          <>
+            <h2 className="font-semibold">Waiting for sandbox credentials</h2>
+            <p className="mt-1 text-sm text-stone-600">
+              Once <code>KONNECT_API_KEY</code> and{" "}
+              <code>KONNECT_WALLET_ID</code> are set on this deployment, this
+              page takes real sandbox payments.
+            </p>
           </>
         ) : (
           <>
