@@ -58,7 +58,9 @@ describe("createHttp", () => {
     const { fetch } = stubFetch([{ status: 404, body: { error: "nope" } }]);
     const http = createHttp({ ...base, fetch });
 
-    const error = await http.get("/payments/missing").catch((e) => e);
+    const error = await http
+      .get("/payments/missing")
+      .catch((e: unknown) => e as ApiError);
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(404);
@@ -117,7 +119,9 @@ describe("createHttp", () => {
     const { fetch } = stubFetch(["hang"]);
     const http = createHttp({ ...base, fetch, timeoutMs: 20 });
 
-    const error = await http.post("/slow", {}).catch((e) => e);
+    const error = await http
+      .post("/slow", {})
+      .catch((e: unknown) => e as TimeoutError);
 
     expect(error).toBeInstanceOf(TimeoutError);
     expect(error.timeoutMs).toBe(20);

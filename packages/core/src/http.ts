@@ -43,16 +43,17 @@ export function createHttp(options: HttpOptions): Http {
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     let response: Response;
     try {
-      response = await fetch(url, {
+      const init: RequestInit = {
         method,
         headers: {
           accept: "application/json",
           ...(body === undefined ? {} : { "content-type": "application/json" }),
           ...headers,
         },
-        body: body === undefined ? undefined : JSON.stringify(body),
         signal: controller.signal,
-      });
+      };
+      if (body !== undefined) init.body = JSON.stringify(body);
+      response = await fetch(url, init);
     } catch (cause) {
       if (controller.signal.aborted) throw new TimeoutError(url, timeoutMs);
       throw new NetworkError(url, cause);
