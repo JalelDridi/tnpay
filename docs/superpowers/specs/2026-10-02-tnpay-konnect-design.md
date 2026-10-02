@@ -44,7 +44,7 @@ Konnect takes TND in millimes and EUR/USD in centimes, as integers.
 ```ts
 tnd(12.5)            // 12500
 millimes(12500)      // { amount: 12500, currency: "TND" } helpers for display
-formatMoney(12500, "TND") // "12,500 TND" or "12.500 DT"; one format, documented
+formatMoney(12500, "TND") // "12.500 DT"; EUR/USD as "12.50 €" / "$12.50"
 ```
 
 Amounts are `number` integers; the functions throw on non-integer results (`tnd(0.0005)`).
