@@ -27,6 +27,16 @@ function stubFetch(script: Reply[]) {
   return { fetch: fetch as unknown as typeof globalThis.fetch, calls };
 }
 
+/** Resolves with whatever the promise rejected with. */
+async function failure<E>(promise: Promise<unknown>): Promise<E> {
+  try {
+    await promise;
+  } catch (error) {
+    return error as E;
+  }
+  throw new Error("expected the promise to reject");
+}
+
 const base = { baseUrl: "https://api.example.test/v2", retryDelayMs: 0 };
 
 describe("createHttp", () => {
@@ -58,9 +68,7 @@ describe("createHttp", () => {
     const { fetch } = stubFetch([{ status: 404, body: { error: "nope" } }]);
     const http = createHttp({ ...base, fetch });
 
-    const error = await http
-      .get("/payments/missing")
-      .catch((e: unknown) => e as ApiError);
+    const error = await failure<ApiError>(http.get("/payments/missing"));
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(404);
@@ -119,9 +127,7 @@ describe("createHttp", () => {
     const { fetch } = stubFetch(["hang"]);
     const http = createHttp({ ...base, fetch, timeoutMs: 20 });
 
-    const error = await http
-      .post("/slow", {})
-      .catch((e: unknown) => e as TimeoutError);
+    const error = await failure<TimeoutError>(http.post("/slow", {}));
 
     expect(error).toBeInstanceOf(TimeoutError);
     expect(error.timeoutMs).toBe(20);
