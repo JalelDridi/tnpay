@@ -1,0 +1,24 @@
+# tnpay
+
+TypeScript SDK for Tunisian payment gateways. Konnect first. Spec: `docs/superpowers/specs/`, plan: `docs/superpowers/plans/`.
+
+## Commands
+
+- `pnpm lint` · `pnpm format:check` · `pnpm typecheck` · `pnpm test` · `pnpm build` — the CI checks, in order. Run all before committing.
+- `pnpm test:watch` while developing.
+
+## Layout
+
+- `packages/core` — `@tnpay/core`: money helpers, HTTP client, idempotency store, status type. Gateway-neutral.
+- `packages/konnect` — `@tnpay/konnect`: Konnect client, webhook handler, and the fake server on the `./fake` entry.
+- `apps/demo` — Next.js demo checkout (not published).
+- `docs/` — guides.
+
+## Rules
+
+- Main entry points use only Web-standard APIs (`fetch`, `Request`, `Response`, `URL`, `AbortController`). `node:http` is allowed only under `packages/konnect/src/fake/`.
+- `post` never retries. `get` retries twice on network errors, timeouts and 5xx.
+- The webhook handler trusts nothing from the request except `payment_ref`; it fetches the payment from Konnect before acting.
+- Never print, log or commit `KONNECT_API_KEY`, `KONNECT_WALLET_ID` or `NPM_TOKEN`.
+- Free tiers only. MIT. Small conventional commits ending with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
+- Jalel approves public wording (READMEs, docs) and architectural changes to the spec.

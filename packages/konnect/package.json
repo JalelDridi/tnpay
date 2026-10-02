@@ -1,0 +1,57 @@
+{
+  "name": "@tnpay/konnect",
+  "version": "0.0.0",
+  "description": "Typed Konnect (konnect.network) client for TypeScript, with a webhook handler that verifies every payment with Konnect before acting, and a fake Konnect server for tests.",
+  "license": "MIT",
+  "author": "Mohamed Jalel Dridi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JalelDridi/tnpay.git",
+    "directory": "packages/konnect"
+  },
+  "homepage": "https://github.com/JalelDridi/tnpay#readme",
+  "keywords": [
+    "konnect",
+    "konnect.network",
+    "tunisia",
+    "payments",
+    "payment-gateway",
+    "webhook",
+    "tnd",
+    "sdk"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./fake": {
+      "types": "./dist/fake/index.d.ts",
+      "import": "./dist/fake/index.js",
+      "require": "./dist/fake/index.cjs"
+    }
+  },
+  "bin": {
+    "tnpay-konnect": "./dist/fake/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tnpay/core": "workspace:*"
+  }
+}

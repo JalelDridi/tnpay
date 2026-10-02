@@ -69,6 +69,7 @@ tnpay/
 **Files:** `packages/core/src/money.ts`, `errors.ts`, `status.ts`, `index.ts`, tests.
 
 **Produces:**
+
 ```ts
 tnd(major: number): number            // 12.5 → 12500; throws RangeError if not an integer result or negative
 toMinor(major: number, currency: "TND" | "EUR" | "USD"): number  // TND ×1000, others ×100
@@ -88,12 +89,14 @@ type PaymentStatus = "pending" | "paid" | "failed" | "expired"
 **Files:** `packages/core/src/http.ts`, `http.test.ts`.
 
 **Produces:**
+
 ```ts
 createHttp(options: { baseUrl: string; headers?: Record<string,string>; timeoutMs?: number; fetch?: typeof fetch; retryDelayMs?: number }): {
   get<T>(path: string): Promise<T>;
   post<T>(path: string, body: unknown): Promise<T>;
 }
 ```
+
 Behaviour: joins `baseUrl` and `path`; sets `content-type: application/json` on post; parses JSON (empty body → `undefined`); non-2xx → `ApiError`; `fetch` rejection → `NetworkError`; abort by timeout → `TimeoutError`. `get` retries up to 2 more times on `NetworkError`, `TimeoutError`, or `ApiError` with status ≥ 500, waiting `retryDelayMs` (default 250) × attempt. `post` never retries.
 
 - [ ] Tests with an injected `fetch` stub (counting calls): get success parses JSON; get 404 → ApiError with status/body; get 500 then 200 → one retry, result returned; get 500×3 → ApiError after 3 calls; post 500 → ApiError after exactly 1 call; fetch rejects → NetworkError (get retries, post not); timeout: fetch that never resolves until `signal` aborts → TimeoutError (use `timeoutMs: 20`).
@@ -104,6 +107,7 @@ Behaviour: joins `baseUrl` and `path`; sets `content-type: application/json` on 
 **Files:** `packages/core/src/idempotency.ts`, test.
 
 **Produces:**
+
 ```ts
 interface IdempotencyStore { claim(key: string): Promise<boolean>; release(key: string): Promise<void> }
 createMemoryStore(): IdempotencyStore
@@ -117,6 +121,7 @@ createMemoryStore(): IdempotencyStore
 **Files:** `packages/konnect/src/types.ts`, `status.ts`, `client.ts`, `index.ts`, tests.
 
 **Produces:**
+
 ```ts
 interface CreatePaymentInput { amount: number; token?: "TND"|"EUR"|"USD"; type?: "immediate"|"partial"; description?: string; acceptedPaymentMethods?: ("wallet"|"bank_card"|"e-DINAR")[]; lifespan?: number; checkoutForm?: boolean; addPaymentFeesToAmount?: boolean; firstName?: string; lastName?: string; phoneNumber?: string; email?: string; orderId?: string; webhook?: string; theme?: "light"|"dark"; receiverWalletId?: string }
 interface CreatePaymentResult { payUrl: string; paymentRef: string }
@@ -126,6 +131,7 @@ interface Payment { status: PaymentStatus; paymentRef: string; amount: number; c
 mapStatus(raw: KonnectPayment, now?: Date): PaymentStatus
 class Konnect { constructor(opts: { apiKey: string; walletId: string; environment?: "sandbox"|"production"; baseUrl?: string; timeoutMs?: number; fetch?: typeof fetch }); payments: { create(input): Promise<CreatePaymentResult>; get(paymentRef: string): Promise<Payment> }; webhooks: { handler(opts: WebhookOptions): (req: Request) => Promise<Response> } }
 ```
+
 `mapStatus`: `completed` → `paid`; `pending` and `expirationDate` < now → `expired`; `pending` and last transaction status in `FAILED_STATUSES = ["failed","failure","declined","error"]` (case-insensitive; confirm against sandbox) → `failed`; `pending` otherwise → `pending`; anything else → `pending`.
 
 - [ ] Tests for `mapStatus` (five cases) and for the client with an injected fetch: create sends `x-api-key`, posts to `/payments/init-payment` with `receiverWalletId` from config, returns `payUrl`/`paymentRef`; `create` with explicit `receiverWalletId` keeps it; `get` calls `/payments/<ref>` and returns a mapped `Payment`; sandbox and production base URLs; `baseUrl` override wins.
@@ -136,6 +142,7 @@ class Konnect { constructor(opts: { apiKey: string; walletId: string; environmen
 **Files:** `packages/konnect/src/fake/index.ts`, `fake/cli.ts`, `fake.test.ts`; `package.json` `exports["./fake"]` and `bin`.
 
 **Produces:**
+
 ```ts
 createFakeKonnect(opts?: { apiKey?: string; port?: number; fetch?: typeof fetch }): Promise<FakeKonnect>
 interface FakeKonnect {
@@ -149,6 +156,7 @@ interface FakeKonnect {
   close(): Promise<void>;
 }
 ```
+
 Routes: `POST /api/v2/payments/init-payment` (401 if `x-api-key` ≠ apiKey; 400 if `amount` not a positive integer or `receiverWalletId` missing; returns `{ payUrl: baseUrl + "/pay?payment_ref=" + ref, paymentRef }`), `GET /api/v2/payments/:ref` (404 `{ error: "Payment not found" }` unknown; else `{ payment }` in the documented shape), `GET /pay?payment_ref=` (HTML with Pay/Fail buttons posting to `/__fake/pay` and `/__fake/fail`), `POST /__fake/pay`, `/__fake/fail`, `/__fake/expire`. `pay` sets `status: "completed"`, pushes a `success` transaction, fires `GET <webhook>?payment_ref=<ref>` `times` times (sequentially, recording status). `fail` pushes a `failed` transaction, status stays `pending`. `expire` sets `expirationDate` to one minute ago.
 
 - [ ] Tests: create via real client against the fake; get returns `pending`; `pay` → `paid` and one delivery to the webhook URL given at create; `pay({times:2})` → two deliveries; wrong api key → `ApiError` 401; unknown ref → `ApiError` 404; `fail` → `failed`; `expire` → `expired`.
@@ -159,11 +167,13 @@ Routes: `POST /api/v2/payments/init-payment` (401 if `x-api-key` ≠ apiKey; 400
 **Files:** `packages/konnect/src/webhook.ts`, `webhook.test.ts`, `webhook.property.test.ts`.
 
 **Produces:**
+
 ```ts
 interface WebhookContext { paymentRef: string; request: Request; raw: KonnectPayment }
 interface WebhookOptions { onPaid: (p: Payment, ctx: WebhookContext) => Promise<void> | void; onPending?: ...; onFailed?: ...; store?: IdempotencyStore; queryParam?: string }
 createWebhookHandler(client: Konnect, opts: WebhookOptions): (request: Request) => Promise<Response>
 ```
+
 Responses (JSON): 400 `{ error: "missing_payment_ref" }`; 404 `{ error: "unknown_payment" }`; 502 `{ error: "<ErrorName>" }`; 200 `{ ok: true, status, duplicate?: true }`; 500 `{ error: "handler_failed" }`. Claim key `konnect:paid:<ref>`.
 
 - [ ] Integration tests using the fake server and a local `node:http` receiver that forwards to the handler: missing ref → 400; unknown ref → 404; paid once → `onPaid` once, 200; `pay({times:2})` → `onPaid` once, second delivery `duplicate: true`; `onPaid` throws → 500 and a further delivery calls it again; pending delivery → `onPending`, `onPaid` not called; failed → `onFailed`; expired → `onFailed`; fake closed → 502.

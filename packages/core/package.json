@@ -1,0 +1,44 @@
+{
+  "name": "@tnpay/core",
+  "version": "0.0.0",
+  "description": "Shared building blocks for tnpay gateway packages: money helpers, an HTTP client with typed errors, an idempotency store and the payment status model.",
+  "license": "MIT",
+  "author": "Mohamed Jalel Dridi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JalelDridi/tnpay.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/JalelDridi/tnpay#readme",
+  "keywords": [
+    "tunisia",
+    "payments",
+    "konnect",
+    "flouci",
+    "tnd",
+    "sdk"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  }
+}
