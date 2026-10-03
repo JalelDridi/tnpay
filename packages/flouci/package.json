@@ -1,6 +1,6 @@
 {
   "name": "@tnpay/flouci",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Typed Flouci (flouci.com) client for TypeScript, with a webhook handler that verifies every payment with Flouci before acting, and a fake Flouci server for tests.",
   "license": "MIT",
   "author": "Mohamed Jalel Dridi",

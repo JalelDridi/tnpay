@@ -1,6 +1,6 @@
 {
   "name": "@tnpay/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared building blocks for tnpay gateway packages: money helpers, an HTTP client with typed errors, an idempotency store and the payment status model.",
   "license": "MIT",
   "author": "Mohamed Jalel Dridi",
