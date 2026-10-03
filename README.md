@@ -1,5 +1,7 @@
 # tnpay
 
+[![CI](https://github.com/JalelDridi/tnpay/actions/workflows/ci.yml/badge.svg)](https://github.com/JalelDridi/tnpay/actions/workflows/ci.yml) [![@tnpay/konnect on npm](https://img.shields.io/npm/v/%40tnpay%2Fkonnect?label=%40tnpay%2Fkonnect)](https://www.npmjs.com/package/@tnpay/konnect) [![@tnpay/flouci on npm](https://img.shields.io/npm/v/%40tnpay%2Fflouci?label=%40tnpay%2Fflouci)](https://www.npmjs.com/package/@tnpay/flouci) [![downloads](https://img.shields.io/npm/dm/%40tnpay%2Fcore?label=downloads)](https://www.npmjs.com/package/@tnpay/core)
+
 Typed TypeScript SDKs for Tunisian payment gateways: Konnect and Flouci.
 
 - **`@tnpay/konnect`**: a typed [Konnect](https://konnect.network) client, a webhook handler that verifies every payment with Konnect before it believes anything, and a fake Konnect server so your tests run without an account.
