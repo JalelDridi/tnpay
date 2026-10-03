@@ -1,5 +1,5 @@
 import { getKonnect, getMode } from "@/lib/konnect";
-import { findOrderByPayment, note } from "@/lib/orders";
+import { getStore, note } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
@@ -12,9 +12,11 @@ export async function GET(request: Request) {
     return Response.json({ error: "demo_not_configured" }, { status: 503 });
   }
   const { client } = await getKonnect();
+  const store = getStore();
+
   const handler = client.webhooks.handler({
-    onPaid(payment) {
-      const order = findOrderByPayment(payment.paymentRef);
+    async onPaid(payment) {
+      const order = await store.get(payment.paymentRef);
       if (!order) return;
       order.status = "paid";
       order.paidAt = new Date().toISOString();
@@ -22,38 +24,41 @@ export async function GET(request: Request) {
         order,
         "Webhook received. Konnect confirms the payment is complete. Order marked paid.",
       );
+      await store.save(order);
     },
-    onPending(payment) {
-      const order = findOrderByPayment(payment.paymentRef);
-      if (order)
-        note(
-          order,
-          "Webhook received. Konnect says the payment is still pending.",
-        );
+    async onPending(payment) {
+      const order = await store.get(payment.paymentRef);
+      if (!order) return;
+      note(
+        order,
+        "Webhook received. Konnect says the payment is still pending.",
+      );
+      await store.save(order);
     },
-    onFailed(payment) {
-      const order = findOrderByPayment(payment.paymentRef);
+    async onFailed(payment) {
+      const order = await store.get(payment.paymentRef);
       if (!order) return;
       order.status = "failed";
       note(
         order,
         `Webhook received. Konnect reports the payment as ${payment.status}.`,
       );
+      await store.save(order);
     },
   });
+
   const response = await handler(request);
-  const order = findOrderByPayment(
-    new URL(request.url).searchParams.get("payment_ref") ?? "",
-  );
-  if (
-    order &&
-    response.status === 200 &&
-    (await response.clone().json()).duplicate
-  ) {
-    note(
-      order,
-      "Webhook delivered again. Already applied, so nothing happened.",
-    );
+
+  const ref = new URL(request.url).searchParams.get("payment_ref") ?? "";
+  if (response.status === 200 && (await response.clone().json()).duplicate) {
+    const order = await store.get(ref);
+    if (order) {
+      note(
+        order,
+        "Webhook delivered again. Already applied, so nothing happened.",
+      );
+      await store.save(order);
+    }
   }
   return response;
 }
