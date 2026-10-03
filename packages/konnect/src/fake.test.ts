@@ -102,7 +102,9 @@ describe("createFakeKonnect", () => {
       baseUrl: fake.baseUrl,
     });
 
-    const unauthorized = await wrong.payments.get("x").catch((e: unknown) => e);
+    const unauthorized = await wrong.payments
+      .get("6ac11e8ad1f77a6d50d6ad01")
+      .catch((e: unknown) => e);
     expect(unauthorized).toBeInstanceOf(ApiError);
     expect((unauthorized as ApiError).status).toBe(401);
 

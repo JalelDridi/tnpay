@@ -4,7 +4,7 @@ import {
   type WebhookCallback,
   type WebhookContext,
 } from "@tnpay/core";
-import type { Konnect } from "./client";
+import { isPaymentRef, type Konnect } from "./client";
 import type { Payment } from "./types";
 
 export type { WebhookContext };
@@ -36,6 +36,7 @@ export function createWebhookHandler(
     lookup: (reference) => client.payments.get(reference),
     keyPrefix: "konnect",
     queryParam: options.queryParam ?? "payment_ref",
+    isReference: isPaymentRef,
     onPaid: options.onPaid,
   };
   if (options.onPending) shared.onPending = options.onPending;

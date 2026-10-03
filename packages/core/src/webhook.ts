@@ -20,6 +20,8 @@ export interface VerifiedWebhookOptions<P extends { status: PaymentStatus }> {
   keyPrefix: string;
   /** Query parameter (and JSON body field) that carries the reference. */
   queryParam: string;
+  /** Rejects references that cannot be real before any call to the gateway. */
+  isReference?: (reference: string) => boolean;
   onPaid: WebhookCallback<P>;
   onPending?: WebhookCallback<P>;
   onFailed?: WebhookCallback<P>;
@@ -68,6 +70,9 @@ export function createVerifiedWebhookHandler<
     const reference = await readReference(request, options.queryParam);
     if (!reference)
       return json(400, { error: `missing_${options.queryParam}` });
+    if (options.isReference && !options.isReference(reference)) {
+      return json(400, { error: `invalid_${options.queryParam}` });
+    }
 
     let payment: P;
     try {

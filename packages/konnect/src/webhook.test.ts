@@ -70,12 +70,23 @@ describe("webhook handler", () => {
   });
 
   it("answers 404 for a reference Konnect does not know", async () => {
-    await fake.fireWebhook("forged", { url: site.url });
+    await fake.fireWebhook("6ac11e8ad1f77a6d50d6ad00", { url: site.url });
 
     expect(site.responses).toEqual([
       { status: 404, body: { error: "unknown_payment" } },
     ]);
     expect(onPaid).not.toHaveBeenCalled();
+  });
+
+  it("answers 400 for a malformed reference without calling Konnect", async () => {
+    const before = fake.requests.length;
+
+    await fake.fireWebhook("forged", { url: site.url });
+
+    expect(site.responses).toEqual([
+      { status: 400, body: { error: "invalid_payment_ref" } },
+    ]);
+    expect(fake.requests.length).toBe(before);
   });
 
   it("calls onPaid once with the verified payment", async () => {

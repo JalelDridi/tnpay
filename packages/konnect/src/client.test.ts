@@ -1,3 +1,4 @@
+import { ApiError } from "@tnpay/core";
 import { describe, expect, it, vi } from "vitest";
 import { Konnect } from "./client";
 
@@ -63,7 +64,7 @@ describe("Konnect.payments.get", () => {
   it("fetches the payment and maps it", async () => {
     const { fetch, calls } = stubFetch(200, {
       payment: {
-        id: "abc",
+        id: "6ac11e8ad1f77a6d50d6ad01",
         status: "completed",
         amount: 5000,
         token: "TND",
@@ -76,17 +77,32 @@ describe("Konnect.payments.get", () => {
       fetch,
     });
 
-    const payment = await konnect.payments.get("abc");
+    const payment = await konnect.payments.get("6ac11e8ad1f77a6d50d6ad01");
 
     expect(calls[0]?.url).toBe(
-      "https://api.konnect.network/api/v2/payments/abc",
+      "https://api.konnect.network/api/v2/payments/6ac11e8ad1f77a6d50d6ad01",
     );
     expect(payment.status).toBe("paid");
-    expect(payment.paymentRef).toBe("abc");
+    expect(payment.paymentRef).toBe("6ac11e8ad1f77a6d50d6ad01");
     expect(payment.amount).toBe(5000);
     expect(payment.currency).toBe("TND");
     expect(payment.orderId).toBe("order-9");
     expect(payment.raw.status).toBe("completed");
+  });
+});
+
+describe("Konnect.payments.get with a malformed reference", () => {
+  it("fails fast with a 404 ApiError and no request", async () => {
+    const { fetch, calls } = stubFetch(500, {});
+    const konnect = new Konnect({ ...config, fetch });
+
+    const error = await konnect.payments
+      .get("not-an-id")
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).status).toBe(404);
+    expect(calls).toHaveLength(0);
   });
 });
 
@@ -95,7 +111,9 @@ describe("Konnect configuration", () => {
     const { fetch, calls } = stubFetch(200, {
       payment: { id: "x", status: "pending", amount: 1, token: "TND" },
     });
-    await new Konnect({ ...config, fetch }).payments.get("x");
+    await new Konnect({ ...config, fetch }).payments.get(
+      "6ac11e8ad1f77a6d50d6ad02",
+    );
 
     expect(calls[0]?.url).toContain("https://api.sandbox.konnect.network/");
   });
@@ -109,9 +127,11 @@ describe("Konnect configuration", () => {
       environment: "production",
       baseUrl: "http://127.0.0.1:7320/api/v2",
       fetch,
-    }).payments.get("x");
+    }).payments.get("6ac11e8ad1f77a6d50d6ad02");
 
-    expect(calls[0]?.url).toBe("http://127.0.0.1:7320/api/v2/payments/x");
+    expect(calls[0]?.url).toBe(
+      "http://127.0.0.1:7320/api/v2/payments/6ac11e8ad1f77a6d50d6ad02",
+    );
   });
 
   it("refuses to start without credentials", () => {

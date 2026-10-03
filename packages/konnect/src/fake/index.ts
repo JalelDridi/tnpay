@@ -246,8 +246,24 @@ export async function createFakeKonnect(
 
     const match = /^\/api\/v2\/payments\/([^/]+)$/.exec(path);
     if (method === "GET" && match) {
-      const payment = payments.get(decodeURIComponent(match[1] ?? ""));
-      if (!payment) return send(res, 404, { error: "Payment not found" });
+      const id = decodeURIComponent(match[1] ?? "");
+      // The real API answers 500 to anything that is not an ObjectId.
+      if (!/^[0-9a-f]{24}$/i.test(id)) {
+        return send(res, 500, {
+          errors: [
+            {
+              code: "internal_server_error",
+              message: `Cast to ObjectId failed for value "${id}"`,
+            },
+          ],
+        });
+      }
+      const payment = payments.get(id);
+      if (!payment) {
+        return send(res, 404, {
+          errors: [{ code: "NOT_FOUND", message: "Payment not found" }],
+        });
+      }
       return send(res, 200, { payment });
     }
 

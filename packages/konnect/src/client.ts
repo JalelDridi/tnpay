@@ -1,4 +1,4 @@
-import { createHttp, type Http } from "@tnpay/core";
+import { ApiError, createHttp, type Http } from "@tnpay/core";
 import { mapStatus } from "./status";
 import type {
   CreatePaymentInput,
@@ -41,16 +41,22 @@ export function toPayment(raw: KonnectPayment): Payment {
   return payment;
 }
 
+/** Konnect references are 24 hex characters. Anything else makes its API answer 500. */
+export const isPaymentRef = (value: string) => /^[0-9a-f]{24}$/i.test(value);
+
 export class Konnect {
   readonly walletId: string;
+  readonly baseUrl: string;
   private readonly http: Http;
 
   constructor(options: KonnectOptions) {
     if (!options.apiKey) throw new Error("Konnect: apiKey is required");
     if (!options.walletId) throw new Error("Konnect: walletId is required");
     this.walletId = options.walletId;
+    this.baseUrl =
+      options.baseUrl ?? BASE_URLS[options.environment ?? "sandbox"];
     const httpOptions: Parameters<typeof createHttp>[0] = {
-      baseUrl: options.baseUrl ?? BASE_URLS[options.environment ?? "sandbox"],
+      baseUrl: this.baseUrl,
       headers: { "x-api-key": options.apiKey },
     };
     if (options.timeoutMs !== undefined)
@@ -72,6 +78,15 @@ export class Konnect {
 
     /** Reads the payment back from Konnect. The only trustworthy source of its status. */
     get: async (paymentRef: string): Promise<Payment> => {
+      const path = `/payments/${encodeURIComponent(paymentRef)}`;
+      // Refuse locally what Konnect would answer 500 to (and we would retry).
+      if (!isPaymentRef(paymentRef)) {
+        throw new ApiError(
+          404,
+          { error: "malformed payment reference" },
+          `${this.baseUrl}${path}`,
+        );
+      }
       const result = await this.http.get<{ payment: KonnectPayment }>(
         `/payments/${encodeURIComponent(paymentRef)}`,
       );
