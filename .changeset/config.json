@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@tnpay/core", "@tnpay/konnect"]],
+  "linked": [["@tnpay/core", "@tnpay/konnect", "@tnpay/flouci"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

@@ -78,6 +78,12 @@ importers:
 
   packages/core: {}
 
+  packages/flouci:
+    dependencies:
+      '@tnpay/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/konnect:
     dependencies:
       '@tnpay/core':

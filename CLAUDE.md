@@ -12,14 +12,15 @@ TypeScript SDK for Tunisian payment gateways. Konnect first. Spec: `docs/superpo
 
 - `packages/core` — `@tnpay/core`: money helpers, HTTP client, idempotency store, status type. Gateway-neutral.
 - `packages/konnect` — `@tnpay/konnect`: Konnect client, webhook handler, and the fake server on the `./fake` entry.
+- `packages/flouci` — `@tnpay/flouci`: the same shape for Flouci, plus refunds.
 - `apps/demo` — Next.js demo checkout (not published).
 - `docs/` — guides.
 
 ## Rules
 
-- Main entry points use only Web-standard APIs (`fetch`, `Request`, `Response`, `URL`, `AbortController`). `node:http` is allowed only under `packages/konnect/src/fake/`.
+- Main entry points use only Web-standard APIs (`fetch`, `Request`, `Response`, `URL`, `AbortController`). `node:http` is allowed only under `packages/*/src/fake/`.
 - `post` never retries. `get` retries twice on network errors, timeouts and 5xx.
 - The webhook handler trusts nothing from the request except `payment_ref`; it fetches the payment from Konnect before acting.
-- Never print, log or commit `KONNECT_API_KEY`, `KONNECT_WALLET_ID` or `NPM_TOKEN`.
+- Never print, log or commit `KONNECT_API_KEY`, `KONNECT_WALLET_ID`, `FLOUCI_PUBLIC_KEY`, `FLOUCI_PRIVATE_KEY` or `NPM_TOKEN`.
 - Free tiers only. MIT. Small conventional commits ending with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
 - Jalel approves public wording (READMEs, docs) and architectural changes to the spec.

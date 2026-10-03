@@ -1,9 +1,10 @@
 # tnpay
 
-Typed TypeScript SDKs for Tunisian payment gateways. Konnect first; Flouci next.
+Typed TypeScript SDKs for Tunisian payment gateways: Konnect and Flouci.
 
 - **`@tnpay/konnect`**: a typed [Konnect](https://konnect.network) client, a webhook handler that verifies every payment with Konnect before it believes anything, and a fake Konnect server so your tests run without an account.
-- **`@tnpay/core`**: the shared pieces: money helpers for millimes and cents, an HTTP client with typed errors, an idempotency store.
+- **`@tnpay/flouci`**: the same for [Flouci](https://flouci.com): client, verified webhook handler, refunds, fake server. See [its README](packages/flouci/README.md).
+- **`@tnpay/core`**: the shared pieces: money helpers for millimes and cents, an HTTP client with typed errors, an idempotency store, and the verify-by-lookup webhook handler both gateways use.
 
 **Demo:** [tnpay-demo.vercel.app](https://tnpay-demo.vercel.app), a checkout against the Konnect sandbox. **Source:** [`apps/demo`](apps/demo).
 
