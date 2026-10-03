@@ -60,6 +60,16 @@ describe("mapStatus", () => {
     ).toBe("paid");
   });
 
+  it("maps Konnect's own expired status, which is what the sandbox sends", () => {
+    expect(mapStatus({ ...base, status: "expired" }, now)).toBe("expired");
+    expect(mapStatus({ ...base, status: "EXPIRED" }, now)).toBe("expired");
+  });
+
+  it("maps failed and canceled payments to failed", () => {
+    expect(mapStatus({ ...base, status: "failed" }, now)).toBe("failed");
+    expect(mapStatus({ ...base, status: "canceled" }, now)).toBe("failed");
+  });
+
   it("treats an unknown status as pending", () => {
     expect(mapStatus({ ...base, status: "whatever" }, now)).toBe("pending");
   });

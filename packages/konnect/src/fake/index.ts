@@ -118,6 +118,8 @@ export async function createFakeKonnect(
     payment.status = "completed";
     payment.reachedAmount = payment.amount;
     payment.amountDue = 0;
+    payment.successfulTransactions = (payment.successfulTransactions ?? 0) + 1;
+    payment.updatedAt = new Date().toISOString();
     payment.transactions.push({
       id: `tx_${randomBytes(6).toString("hex")}`,
       status: "success",
@@ -136,13 +138,17 @@ export async function createFakeKonnect(
       amount: payment.amount,
       method: "bank_card",
     });
+    payment.failedTransactions = (payment.failedTransactions ?? 0) + 1;
+    payment.updatedAt = new Date().toISOString();
     await fireWebhook(ref);
   }
 
+  // As the real sandbox does: the status itself becomes "expired".
   async function expire(ref: string) {
     const payment = payments.get(ref);
     if (!payment) throw new Error(`Fake Konnect: unknown payment ${ref}`);
-    payment.expirationDate = new Date(Date.now() - 60_000).toISOString();
+    payment.status = "expired";
+    payment.updatedAt = new Date().toISOString();
     await fireWebhook(ref);
   }
 
@@ -210,7 +216,6 @@ export async function createFakeKonnect(
         return send(res, 400, { error: "amount must be a positive integer" });
       }
       const id = randomBytes(12).toString("hex");
-      const lifespan = typeof input.lifespan === "number" ? input.lifespan : 60;
       const payment: Stored = {
         id,
         status: "pending",
@@ -218,7 +223,10 @@ export async function createFakeKonnect(
         amountDue: input.amount as number,
         reachedAmount: 0,
         token: typeof input.token === "string" ? input.token : "TND",
-        expirationDate: new Date(Date.now() + lifespan * 60_000).toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        failedTransactions: 0,
+        successfulTransactions: 0,
         shortId: id.slice(0, 8),
         link: `${origin}/pay?payment_ref=${id}`,
         type: typeof input.type === "string" ? input.type : "immediate",

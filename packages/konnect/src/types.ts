@@ -49,14 +49,20 @@ export interface KonnectTransaction {
 /** The `payment` object from `GET /payments/:id`. Fields beyond these pass through. */
 export interface KonnectPayment {
   id: string;
-  status: "completed" | "pending" | (string & {});
+  /** Seen in the sandbox: `pending`, `completed`, `expired`. */
+  status: "completed" | "pending" | "expired" | (string & {});
   amount: number;
   amountDue?: number;
   reachedAmount?: number;
   token: string;
   convertedAmount?: number;
   exchangeRate?: number;
+  /** Documented, but absent from sandbox responses as of October 2026. */
   expirationDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  failedTransactions?: number;
+  successfulTransactions?: number;
   shortId?: string;
   link?: string;
   webhook?: string;

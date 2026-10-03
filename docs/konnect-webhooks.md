@@ -56,14 +56,15 @@ sequenceDiagram
 
 ## Status mapping
 
-Konnect's payment has `status: "completed" | "pending"` and a `transactions` array of attempts.
+Konnect's payment has a `status` (`pending`, `completed`, and, seen in the sandbox, `expired`; Konnect moves it to `expired` itself about two minutes after the lifespan ends) and a `transactions` array of attempts. The documented `expirationDate` field was absent from every sandbox response in October 2026.
 
-| Konnect                                                                     | tnpay     |
-| --------------------------------------------------------------------------- | --------- |
-| `completed`                                                                 | `paid`    |
-| `pending`, `expirationDate` in the past                                     | `expired` |
-| `pending`, last transaction status is `failed`/`failure`/`declined`/`error` | `failed`  |
-| `pending` otherwise                                                         | `pending` |
+| Konnect                                                                     | tnpay                                                                  |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `completed`                                                                 | `paid`                                                                 |
+| `expired`                                                                   | `expired`                                                              |
+| `failed` / `canceled`                                                       | `failed`                                                               |
+| `pending`, last transaction status is `failed`/`failure`/`declined`/`error` | `failed` (unconfirmed: the sandbox card service was down when checked) |
+| `pending` otherwise                                                         | `pending`                                                              |
 
 The failure names are matched case-insensitively. Konnect's object is always on `payment.raw` if you need more.
 
