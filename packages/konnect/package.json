@@ -1,6 +1,6 @@
 {
   "name": "@tnpay/konnect",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Typed Konnect (konnect.network) client for TypeScript, with a webhook handler that verifies every payment with Konnect before acting, and a fake Konnect server for tests.",
   "license": "MIT",
   "author": "Mohamed Jalel Dridi",
